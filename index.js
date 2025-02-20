@@ -23,8 +23,8 @@ app.use(cors());
 app.use(limiter);
 
 // Routes
-app.use(authMiddleware);
-app.post("/get-video-caption", videoTranscriptRoute);
+// app.use(authMiddleware);
+app.post("/get-video-caption", authMiddleware, videoTranscriptRoute);
 app.post("/new-key", createNewApiKey);
 
 app.listen(process.env.PORT || 3000, () => {
