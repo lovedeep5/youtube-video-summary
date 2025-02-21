@@ -2,9 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const { startCaptionWorker } = require("./lib/workers.js");
 const { rateLimit } = require("express-rate-limit");
+
+const authMiddleware = require("./middlewares/auth");
+const getCaptionById = require("./controllers/get-caption-by-queue-id");
 const { videoTranscriptRoute } = require("./controllers/video-transcript");
 const { createNewApiKey } = require("./controllers/new-api-key");
-const authMiddleware = require("./middlewares/auth.js");
 
 // INITS
 startCaptionWorker();
@@ -24,8 +26,10 @@ app.use(limiter);
 
 // Routes
 // app.use(authMiddleware);
-app.post("/get-video-caption", authMiddleware, videoTranscriptRoute);
-app.post("/new-key", createNewApiKey);
+app.post("/process-video-caption", authMiddleware, videoTranscriptRoute);
+// app.post("/new-key", createNewApiKey);
+// TODO: Add a new route to get all captions by caption id
+app.get("/get-caption-by-queue-id", authMiddleware, getCaptionById);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Node server Started");
